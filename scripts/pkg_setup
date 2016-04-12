@@ -1,0 +1,47 @@
+#!/bin/bash
+# Setup packages needed for dead-simple-analytics
+# Run with either `./pkg_setup` or `bash pkg_setup`
+pkg_ok()
+{
+  # Check if an argument is provided, i.e. not the empty string
+  if [[ -n "$1" ]]
+  then
+    pkg="$1"
+    # PKG_OK is the empty string if the package is not installed, otherwise it's
+    # some other string
+    PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $pkg | grep "install ok installed")
+    echo $PKG_OK
+  fi
+}
+
+# sudo_fn, maybe allow for gksudo later
+sudo_fn=sudo
+# Install a package using apt if it isn't already installed on the system
+ensure()
+{
+  # check if
+  if [[ -n "$1" ]]
+  then
+    pkg="$1"
+    # check if pkg_ok returned the empty string, i.e. the package isn't
+    # installed
+    if [[ -z "$(pkg_ok $pkg)" ]]
+    then
+      # Install the missing package, Just Say Yes if it asks
+      $sudo_fn apt-get --force-yes --yes install $pkg
+    fi
+  fi
+}
+
+ensure python-dev
+ensure python-pip
+
+sudo pip install virtualenv
+sudo pip install virtualenvwrapper
+
+# Set up virtualenvwrapper -- NOTE: add these two lines to .bashrc
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
+
+# Make the virtual environment for dead-simple-analytics
+mkvirtualenv dsa

@@ -1,0 +1,15 @@
+#!/bin/bash
+# Setup a virtualenv for dead-simple-analytics
+# Run in a virtualenv (e.g. `workon dsa`) with either `./pkg_setup` or
+# `bash pkg_setup`
+# get the directory of the script ("$0" is the first argument to the script,
+# i.e. the name of the script itself)
+req_file=$(dirname "$0")/venv_requirements.txt
+# Check if requirements file exists
+if [[ -f "$req_file" ]]
+then
+  # Install all requirements from the file using pip
+  pip install -r $req_file
+else
+  echo "Can't set up virtualenv, $req_file does not exist."
+fi
