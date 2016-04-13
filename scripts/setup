@@ -1,0 +1,4 @@
+#!/bin/bash
+dir=$(dirname "$0")
+$dir/pkg_setup
+$dir/venv_setup
